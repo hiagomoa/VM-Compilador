@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.vm.MainController">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1200.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Arquivo">
+            <items>
+              <MenuItem fx:id="menuItemOpenFile" mnemonicParsing="false" onAction="#menuItemOpenFileAction" text="Open" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Sobre">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TableView fx:id="table" layoutX="14.0" layoutY="75.0" prefHeight="450.0" prefWidth="900.0">
+        <columns>
+          <TableColumn fx:id="linha" prefWidth="100.0" text="Linha" />
+          <TableColumn fx:id="instrucao" prefWidth="200.0" text="Instrução" />
+            <TableColumn fx:id="atributo" prefWidth="300.0" text="Atributo 1" />
+            <TableColumn fx:id="atributo2" minWidth="8.0" prefWidth="300.0" text="Atributo 2" />
+        </columns>
+      </TableView>
+      <TableView fx:id="memoriaTable" layoutX="947.0" layoutY="75.0" prefHeight="450.0" prefWidth="202.0">
+         <columns>
+            <TableColumn fx:id="endereco" prefWidth="102.0" text="Endereço" />
+            <TableColumn fx:id="valor" prefWidth="98.0" text="Valor" />
+         </columns>
+      </TableView>
+      <Text layoutX="14.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Código de Máquina" />
+      <Text layoutX="947.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Memória (Pilha)" />
+      <Text layoutX="14.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Saida de dados" />
+      <ListView layoutX="14.0" layoutY="578.0" prefHeight="200.0" prefWidth="324.0" />
+      <Pane layoutX="449.0" layoutY="578.0" prefHeight="200.0" prefWidth="366.0" style="-fx-background-color: #DCDCDC;">
+         <children>
+            <Text layoutX="8.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modo de Execução" wrappingWidth="135.13671875" />
+            <RadioButton layoutX="8.0" layoutY="44.0" mnemonicParsing="false" text="Normal" />
+            <RadioButton layoutX="8.0" layoutY="83.0" mnemonicParsing="false" text="Passo a passo" />
+         </children>
+      </Pane>
+      <Button layoutX="947.0" layoutY="578.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" text="Executar" />
+      <Button layoutX="947.0" layoutY="640.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" text="Parar" />
+   </children>
+</AnchorPane>
