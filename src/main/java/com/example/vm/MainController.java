@@ -78,11 +78,12 @@ public class MainController implements Initializable {
             byte[] file = new FileReader().reader();
             LinkedList<Commands> commandsLines = new ReadLines().Reader(file);
             listCommand = new ReadLines().correctionLabels(commandsLines);
-            for (int i = 0; i < 1000; i++) {
+            for (int j = 0; j < 100; j++) {
                 stack.add(0);
             }
             int gg = 0;
-            while (gg == 0) {
+            while (flagStop == false) {
+                System.out.println("i   "+i);
                 gg = walker(listCommand.get(i));
                 //  table.setItems(convertToObservableList());
                 i++;
@@ -103,12 +104,14 @@ public class MainController implements Initializable {
         }
         if (!instruction.attribute_2.equals("")) {
             attribute_2 = Integer.valueOf(instruction.attribute_2);
+            System.out.println("attribute_2 " + attribute_2);
         }
+        if(top>-1) System.out.println("STACK: "+ stack.get(top));
 
-        switch (instruction.attribute_command) {
+          switch (instruction.attribute_command) {
             case Command.LDC:
                 top++;
-                stack.push(attribute_1);
+                stack.set(top, attribute_1);
                 break;
             case Command.LDV:
                 top++;
@@ -153,12 +156,14 @@ public class MainController implements Initializable {
                 stack.set(top, 1 - stack.get(top));
                 break;
             case Command.CME:
+                System.out.println("----- CME  STACKTOP-1 " +stack.get(top - 1)+" TOP "+ stack.get(top));
                 if (stack.get(top - 1) < stack.get(top)) {
                     stack.set(top - 1, 1);
                 } else {
                     stack.set(top - 1, 0);
                 }
                 top--;
+                System.out.println("----- CME  TOP "+stack.get(top));
                 break;
             case Command.CMA:
                 if (stack.get(top - 1) > stack.get(top)) {
@@ -211,8 +216,6 @@ public class MainController implements Initializable {
             case Command.JMPF:
                 if (stack.get(top) == 0) {
                     i = attribute_1;
-                } else {
-                    i++;
                 }
                 top--;
                 break;
@@ -222,7 +225,7 @@ public class MainController implements Initializable {
                 stack.set(top, readed);
                 break;
             case Command.PRN:
-                System.out.println(stack.get(top));//TODO: PRINTAR CORRETAMENTE
+                System.out.println("SAIDA"+stack.get(top));//TODO: PRINTAR CORRETAMENTE
                 top--;
                 break;
             case Command.START:
@@ -235,7 +238,7 @@ public class MainController implements Initializable {
                 }
                 break;
             case Command.DALLOC:
-                for (int k = attribute_2 - 1; k == 0; k--) {
+                for (int k = attribute_2 - 1; k >= 0; k--) {
                     stack.set(attribute_1 + k, stack.get(top));
                     top--;
                 }
@@ -243,14 +246,16 @@ public class MainController implements Initializable {
             case Command.HLT:
                 flagStop = true;
                 //TODO: parar execução;
-                return -1;
+                break;
             case Command.CALL:
                 top++;
-                stack.set(top, i + 1);
+                stack.set(top, i);
                 i = attribute_1;
                 break;
             case Command.RETURN:
                 i = stack.get(top);
+                System.out.println(" AQUI DENTRO "+ i+" STACKTOP " +stack.get(top)+" TOP "+top);
+
                 top--;
                 break;
             default:

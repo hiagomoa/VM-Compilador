@@ -28,4 +28,5 @@ public class Command {
     public static final String ALLOC = "ALLOC";
     public static final String DALLOC = "DALLOC";
     public static final String RETURN = "RETURN";
+    public static final String NULL = "NULL";
 }
