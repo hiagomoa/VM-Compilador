@@ -28,15 +28,18 @@ public class ReadLines {
         linesCommands.forEach(element->{
             if(element.attribute_command.contains(Command.JMPF)||element.attribute_command.contains(Command.JMP)||element.attribute_command.contains(Command.CALL)){
                 linesCommands.forEach(element_2->{
-                    if(element_2.attribute_numberLine.contains(element.attribute_1)){
-                        element.setAttribute_1(new CompleteWithSpaces().CompleteWithSpaces(element_2.line));
-                        element_2.setAttribute_numberLine(element_2.line);
+                    if(element.attribute_1.contains(element_2.attribute_numberLine)){
+                        element.setAttribute_1(element_2.line);
+                        element_2.setAttribute_1(element_2.line);
                     }
                 });
             }
         });
         linesCommands.forEach(element->{
-          element.setAttribute_numberLine(new CompleteWithSpaces().CompleteWithSpaces(element.line));
+          element.setAttribute_numberLine(element.line.trim());
+          element.setAttribute_command(element.attribute_command.trim());
+          element.setAttribute_1(element.attribute_1.trim());
+          element.setAttribute_2(element.attribute_2.trim());
         });
         return linesCommands;
     }
