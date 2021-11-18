@@ -36,16 +36,16 @@
             <TableColumn fx:id="atributo2" minWidth="8.0" prefWidth="300.0" text="Atributo 2" />
         </columns>
       </TableView>
-      <TableView fx:id="memoriaTable" layoutX="947.0" layoutY="75.0" prefHeight="450.0" prefWidth="202.0">
+      <TableView fx:id="memoryTable" layoutX="947.0" layoutY="75.0" prefHeight="450.0" prefWidth="202.0">
          <columns>
-            <TableColumn fx:id="endereco" prefWidth="102.0" text="Endereço" />
-            <TableColumn fx:id="valor" prefWidth="98.0" text="Valor" />
+            <TableColumn fx:id="address" prefWidth="102.0" text="Endereço" />
+            <TableColumn fx:id="value" prefWidth="98.0" text="Valor" />
          </columns>
       </TableView>
       <Text layoutX="14.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Código de Máquina" />
       <Text layoutX="947.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Memória (Pilha)" />
       <Text layoutX="14.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Saida de dados" />
-      <ListView layoutX="14.0" layoutY="578.0" prefHeight="200.0" prefWidth="324.0" />
+      <ListView fx:id="listOutput" layoutX="14.0" layoutY="578.0" prefHeight="200.0" prefWidth="324.0"/>
       <Pane layoutX="449.0" layoutY="578.0" prefHeight="200.0" prefWidth="366.0" style="-fx-background-color: #DCDCDC;">
          <children>
             <Text layoutX="8.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modo de Execução" wrappingWidth="135.13671875" />
@@ -53,7 +53,7 @@
             <RadioButton layoutX="8.0" layoutY="83.0" mnemonicParsing="false" text="Passo a passo" />
          </children>
       </Pane>
-      <Button layoutX="947.0" layoutY="578.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" text="Executar" />
+      <Button fx:id="run" layoutX="947.0" layoutY="578.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0"  onAction="#handleButtonRun" text="Executar"/>
       <Button layoutX="947.0" layoutY="640.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" text="Parar" />
    </children>
 </AnchorPane>

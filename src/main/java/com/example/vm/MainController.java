@@ -6,20 +6,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.IntStream;
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainController implements Initializable {
 
@@ -28,20 +26,10 @@ public class MainController implements Initializable {
     boolean flagStop = false;
     Integer i = 0;
     LinkedList<Integer> stack = new LinkedList<>();
+    int select=0;
 
     @FXML
     private MenuItem menuItemOpenFile;
-
-    @FXML
-    public void menuItemOpenFileAction() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File", "*.obj"));
-        File f = fileChooser.showOpenDialog(null);
-        if (f != null) {
-            System.out.println("xxxx: " + f.getAbsolutePath());
-        }
-    }
 
     @FXML
     private TableView<Commands> table;
@@ -59,56 +47,116 @@ public class MainController implements Initializable {
     private TableColumn<Commands, String> linha;
 
     @FXML
-    private TableView<?> memoriaTable;
+    private TableColumn<Stack, String> address;
+
     @FXML
-    private TableColumn<?, ?> endereco;
+    private TableColumn<Stack, String> value;
+
     @FXML
-    private TableColumn<?, ?> valor;
+    private TableView<Stack> memoryTable;
+
+    @FXML
+    private Button run;
+
+    @FXML
+    private ListView<String> listOutput;
+
+    @FXML
+    private ObservableList<String> observableListView;
+
+    public List<String> list = new ArrayList<>();
+
+    @FXML
+    public void menuItemOpenFileAction() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File", "*.obj"));
+        File f = fileChooser.showOpenDialog(null);
+        if (f != null) {
+            System.out.println("xxxx: " + f.getAbsolutePath());
+        }
+    }
 
     public ObservableList<Commands> convertToObservableList() {
-        Controller();
+        Read();
         return FXCollections.observableArrayList(
                 listCommand
         );
     }
 
     @FXML
-    private void Controller() {
-        try {
-            byte[] file = new FileReader().reader();
-            LinkedList<Commands> commandsLines = new ReadLines().Reader(file);
-            listCommand = new ReadLines().correctionLabels(commandsLines);
-            for (int j = 0; j < 100; j++) {
-                stack.add(0);
+    private void setListOutput(String exit) {
+        list.add(exit);
+        observableListView=FXCollections.observableArrayList(list);
+        listOutput.setItems(observableListView);
+    }
+
+    public List<Stack> listStack = new ArrayList<>();
+    @FXML
+    private ObservableList<Stack> observableListStack;
+
+
+    private void setStack() {
+        listStack.clear();
+
+        for(int i=0; i<=top; i++){
+           Integer element = stack.get(i);
+            if (element != null){
+                listStack.add(new Stack(String.valueOf(i), String.valueOf(element)));
+            }else{
+                listStack.add(new Stack(String.valueOf(i), ""));
             }
-            int gg = 0;
-            while (flagStop == false) {
-                System.out.println("i   "+i);
-                gg = walker(listCommand.get(i));
-                //  table.setItems(convertToObservableList());
+        }
+
+        observableListStack=FXCollections.observableArrayList(listStack);
+        memoryTable.setItems(observableListStack);
+    }
+
+    @FXML
+    private void handleButtonRun() {
+        if(select==1){
+            while(flagStop==false){
+                Controller();
                 i++;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else{
+            Controller();
+            setStack();
+            i++;
         }
+    }
+
+    @FXML
+    public int openInput() {
+        TextInputDialog td = new TextInputDialog();
+        td.showAndWait();
+        Integer value = Integer.valueOf(td.getEditor().getText());
+        return value;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        atributo.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_1"));
+        atributo2.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_2"));
+        instrucao.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_command"));
+        linha.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_numberLine"));
+        ObservableList obListCommands = convertToObservableList();
+        table.setItems(obListCommands);
+        value.setCellValueFactory(new PropertyValueFactory<Stack, String>("value"));
+        address.setCellValueFactory(new PropertyValueFactory<Stack, String>("address"));
     }
 
     @FXML
     private int walker(Commands instruction) {
         Integer attribute_1 = null;
         Integer attribute_2 = null;
-        System.out.println("Commands " + instruction.attribute_command);
         if (!instruction.attribute_1.equals("")) {
             attribute_1 = Integer.valueOf(instruction.attribute_1);
-            System.out.println("attribute_1 " + attribute_1);
         }
         if (!instruction.attribute_2.equals("")) {
             attribute_2 = Integer.valueOf(instruction.attribute_2);
-            System.out.println("attribute_2 " + attribute_2);
         }
-        if(top>-1) System.out.println("STACK: "+ stack.get(top));
-
-          switch (instruction.attribute_command) {
+        switch (instruction.attribute_command) {
             case Command.LDC:
                 top++;
                 stack.set(top, attribute_1);
@@ -156,14 +204,12 @@ public class MainController implements Initializable {
                 stack.set(top, 1 - stack.get(top));
                 break;
             case Command.CME:
-                System.out.println("----- CME  STACKTOP-1 " +stack.get(top - 1)+" TOP "+ stack.get(top));
                 if (stack.get(top - 1) < stack.get(top)) {
                     stack.set(top - 1, 1);
                 } else {
                     stack.set(top - 1, 0);
                 }
                 top--;
-                System.out.println("----- CME  TOP "+stack.get(top));
                 break;
             case Command.CMA:
                 if (stack.get(top - 1) > stack.get(top)) {
@@ -225,7 +271,7 @@ public class MainController implements Initializable {
                 stack.set(top, readed);
                 break;
             case Command.PRN:
-                System.out.println("SAIDA"+stack.get(top));//TODO: PRINTAR CORRETAMENTE
+                setListOutput(String.valueOf(stack.get(top)));
                 top--;
                 break;
             case Command.START:
@@ -254,8 +300,6 @@ public class MainController implements Initializable {
                 break;
             case Command.RETURN:
                 i = stack.get(top);
-                System.out.println(" AQUI DENTRO "+ i+" STACKTOP " +stack.get(top)+" TOP "+top);
-
                 top--;
                 break;
             default:
@@ -265,22 +309,28 @@ public class MainController implements Initializable {
         return 0;
     }
 
+    private void Read() {
+        try {
+            byte[] file = new FileReader().reader();
+            LinkedList<Commands> commandsLines = new ReadLines().Reader(file);
+            listCommand = new ReadLines().correctionLabels(commandsLines);
+            for (int j = 0; j < 500; j++) {
+                stack.add(null);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @FXML
-    public int openInput() {
-        TextInputDialog td = new TextInputDialog();
-
-        td.showAndWait();
-        Integer value = Integer.valueOf(td.getEditor().getText());
-        System.out.println("OPAAAAAAAAAAAAAA" + value);
-        return value;
+    private void Controller() {
+        table.requestFocus();
+        table.getSelectionModel().select(i);
+        table.getFocusModel().focus(i);
+        table.scrollTo(i);
+        walker(listCommand.get(i));
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        atributo.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_1"));
-        atributo2.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_2"));
-        instrucao.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_command"));
-        linha.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_numberLine"));
-        table.setItems(convertToObservableList());
-    }
+
 }
