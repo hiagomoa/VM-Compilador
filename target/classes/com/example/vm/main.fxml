@@ -19,11 +19,7 @@
           <Menu mnemonicParsing="false" text="Arquivo">
             <items>
               <MenuItem fx:id="menuItemOpenFile" mnemonicParsing="false" onAction="#menuItemOpenFileAction" text="Open" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Sobre">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+                <MenuItem fx:id="menuItemReset" mnemonicParsing="false" onAction="#menuItemResetProgram" text="Reset" />
             </items>
           </Menu>
         </menus>
@@ -49,11 +45,11 @@
       <Pane layoutX="449.0" layoutY="578.0" prefHeight="200.0" prefWidth="366.0" style="-fx-background-color: #DCDCDC;">
          <children>
             <Text layoutX="8.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modo de Execução" wrappingWidth="135.13671875" />
-            <RadioButton layoutX="8.0" layoutY="44.0" mnemonicParsing="false" text="Normal" />
-            <RadioButton layoutX="8.0" layoutY="83.0" mnemonicParsing="false" text="Passo a passo" />
+            <RadioButton fx:id="runNormal" layoutX="8.0" layoutY="44.0" mnemonicParsing="false" text="Normal" onAction="#handlerCheckNormal"/>
+            <RadioButton fx:id="runStepByStep" layoutX="8.0" layoutY="83.0" mnemonicParsing="false" text="Passo a passo" onAction="#handlerCheckStepByStep" />
          </children>
       </Pane>
       <Button fx:id="run" layoutX="947.0" layoutY="578.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0"  onAction="#handleButtonRun" text="Executar"/>
-      <Button layoutX="947.0" layoutY="640.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" text="Parar" />
+      <Button  fx:id="stop" layoutX="947.0" layoutY="640.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="202.0" onAction="#handleButtonStop"  text="Parar" />
    </children>
 </AnchorPane>

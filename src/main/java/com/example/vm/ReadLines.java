@@ -11,7 +11,7 @@ public class ReadLines {
         LinkedList<Commands> linesCommands = new LinkedList<>();
         int numberLine = 0;
         String line = "";
-        for (int i = 0; i < file.length; i += 32) {
+        for (int i = 0; i < file.length-1; i += 32) {
             for (int j = 0; j < 32; j++) {
                 line += (char) file[i + j];
             }
@@ -31,8 +31,7 @@ public class ReadLines {
             element.setAttribute_1(element.attribute_1.trim());
             element.setAttribute_2(element.attribute_2.trim());
         });
-        int o = 0;
-        o = 1;
+
         linesCommands.forEach(element -> {
             if (element.attribute_command.contains(Command.JMPF) || element.attribute_command.contains(Command.JMP) || element.attribute_command.contains(Command.CALL)) {
                 Commands finded = linesCommands.stream()

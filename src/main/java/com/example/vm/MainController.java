@@ -1,6 +1,4 @@
 package com.example.vm;
-
-
 import com.example.vm.Consts.Command;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainController implements Initializable {
 
@@ -59,6 +56,15 @@ public class MainController implements Initializable {
     private Button run;
 
     @FXML
+    private Button stop;
+
+    @FXML
+    private RadioButton runNormal;
+
+    @FXML
+    private RadioButton runStepByStep;
+
+    @FXML
     private ListView<String> listOutput;
 
     @FXML
@@ -66,19 +72,25 @@ public class MainController implements Initializable {
 
     public List<String> list = new ArrayList<>();
 
+
     @FXML
-    public void menuItemOpenFileAction() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File", "*.obj"));
-        File f = fileChooser.showOpenDialog(null);
-        if (f != null) {
-            System.out.println("xxxx: " + f.getAbsolutePath());
-        }
+    public void menuItemResetProgram() {
+        top = 0;
+        flagStop = false;
+        i = 0;
+        stop.setDisable(false);
+        run.setDisable(false);
+
+        list.clear();
+        observableListView=FXCollections.observableArrayList(list);
+        listOutput.setItems(observableListView);
+
+        listStack.clear();
+        observableListStack=FXCollections.observableArrayList(listStack);
+        memoryTable.setItems(observableListStack);
     }
 
     public ObservableList<Commands> convertToObservableList() {
-        Read();
         return FXCollections.observableArrayList(
                 listCommand
         );
@@ -113,16 +125,48 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void handlerCheckNormal(){
+        runStepByStep.setSelected(false);
+        select = 1;
+
+        if(!runNormal.isSelected()){
+            runNormal.setSelected(true);
+        }
+
+    }
+
+    @FXML
+    private void  handlerCheckStepByStep(){
+        runNormal.setSelected(false);
+        select = 0;
+        if(!runStepByStep.isSelected()){
+            runStepByStep.setSelected(true);
+        }
+    }
+
+    @FXML
+    private void  handleButtonStop(){
+        stop.setDisable(true);
+        run.setDisable(true);
+    }
+
+    @FXML
     private void handleButtonRun() {
-        if(select==1){
+        if(runNormal.isSelected()){
             while(flagStop==false){
                 Controller();
+                setStack();
                 i++;
             }
+            handleButtonStop();
         }else{
-            Controller();
-            setStack();
-            i++;
+            if(flagStop==false){
+                Controller();
+                setStack();
+                i++;
+            }else{
+                handleButtonStop();
+            }
         }
     }
 
@@ -140,10 +184,10 @@ public class MainController implements Initializable {
         atributo2.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_2"));
         instrucao.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_command"));
         linha.setCellValueFactory(new PropertyValueFactory<Commands, String>("attribute_numberLine"));
-        ObservableList obListCommands = convertToObservableList();
-        table.setItems(obListCommands);
+
         value.setCellValueFactory(new PropertyValueFactory<Stack, String>("value"));
         address.setCellValueFactory(new PropertyValueFactory<Stack, String>("address"));
+        runNormal.setSelected(true);
     }
 
     @FXML
@@ -308,10 +352,24 @@ public class MainController implements Initializable {
         }
         return 0;
     }
+    @FXML
+    public void menuItemOpenFileAction() throws IOException {
+        menuItemResetProgram();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File", "*.obj"));
+        File f = fileChooser.showOpenDialog(null);
+        if (f != null) {
+            byte[] file = new FileReader().reader(f.getAbsolutePath());
+            Read(file);
+            ObservableList obListCommands = convertToObservableList();
+            table.setItems(obListCommands);
+        }
 
-    private void Read() {
+    }
+
+    private void Read(byte[] file ) {
         try {
-            byte[] file = new FileReader().reader();
             LinkedList<Commands> commandsLines = new ReadLines().Reader(file);
             listCommand = new ReadLines().correctionLabels(commandsLines);
             for (int j = 0; j < 500; j++) {
@@ -331,6 +389,4 @@ public class MainController implements Initializable {
         table.scrollTo(i);
         walker(listCommand.get(i));
     }
-
-
 }
