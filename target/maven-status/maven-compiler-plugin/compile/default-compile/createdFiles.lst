@@ -1,0 +1,11 @@
+com\example\vm\Consts\Command.class
+com\example\vm\FileReader.class
+com\example\vm\Stack.class
+module-info.class
+com\example\vm\Table.class
+com\example\vm\MainController.class
+com\example\vm\TraverseCommands.class
+com\example\vm\Utils\CompleteWithSpaces.class
+com\example\vm\ReadLines.class
+com\example\vm\Commands.class
+com\example\vm\MainApplication.class

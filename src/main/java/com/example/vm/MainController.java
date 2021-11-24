@@ -173,6 +173,9 @@ public class MainController implements Initializable {
     @FXML
     public int openInput() {
         TextInputDialog td = new TextInputDialog();
+        td.setTitle("VM");
+        td.setGraphic(null);
+        td.setHeaderText("Insira um Inteiro");
         td.showAndWait();
         Integer value = Integer.valueOf(td.getEditor().getText());
         return value;
