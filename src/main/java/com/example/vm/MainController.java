@@ -16,6 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Classe de Controle da UI
+ */
 public class MainController implements Initializable {
 
     LinkedList<Commands> listCommand;
@@ -70,9 +73,16 @@ public class MainController implements Initializable {
     @FXML
     private ObservableList<String> observableListView;
 
+    @FXML
+    private ObservableList<Stack> observableListStack;
+
+    public List<Stack> listStack = new ArrayList<>();
+
     public List<String> list = new ArrayList<>();
 
-
+    /**
+     * Método de reset de estado da VM
+     */
     @FXML
     public void menuItemResetProgram() {
         top = 0;
@@ -102,11 +112,6 @@ public class MainController implements Initializable {
         observableListView=FXCollections.observableArrayList(list);
         listOutput.setItems(observableListView);
     }
-
-    public List<Stack> listStack = new ArrayList<>();
-    @FXML
-    private ObservableList<Stack> observableListStack;
-
 
     private void setStack() {
         listStack.clear();
@@ -150,6 +155,11 @@ public class MainController implements Initializable {
         run.setDisable(true);
     }
 
+
+    /**
+     * Metodo do botão que controla a execução das instruções,
+     * seja passo a passo ou normal, dependendo de flagStop
+     */
     @FXML
     private void handleButtonRun() {
         if(runNormal.isSelected()){
@@ -193,6 +203,13 @@ public class MainController implements Initializable {
         runNormal.setSelected(true);
     }
 
+    /**
+     * Método walker, verifica a intrução passada por parametro,
+     * @param instruction, é uma intrução do tipo Commands, que contem:
+     * o comando e 2 atributos alem da linha da instrução.
+     * @see Commands
+     * após verificar qual é o commando é feito as necessárias manipulações da pilha.
+     */
     @FXML
     private int walker(Commands instruction) {
         Integer attribute_1 = null;
@@ -338,7 +355,6 @@ public class MainController implements Initializable {
                 break;
             case Command.HLT:
                 flagStop = true;
-                //TODO: parar execução;
                 break;
             case Command.CALL:
                 top++;
@@ -355,6 +371,12 @@ public class MainController implements Initializable {
         }
         return 0;
     }
+
+    /**
+     * Método menuItemOpenFileAction lê o arquivo transformando o em um array de bytes e o envia para Read,
+     * após Read ser finalizado chama convertToObservableList setando seu retorno na tabela de instruções da interface.
+     * @throws IOException
+     */
     @FXML
     public void menuItemOpenFileAction() throws IOException {
         menuItemResetProgram();
@@ -371,6 +393,13 @@ public class MainController implements Initializable {
 
     }
 
+    /**
+     * o método Read encaminha "file" para a class "ReadLines"
+     * atribuindo seu retorno a variavel global "listCommand"
+     * @see ReadLines
+     * Alem startar a pilha com 500 posições
+     * @param file parametro contendo o array de byte lido do arquivo selecionado em "menuItemOpenFileAction"
+     */
     private void Read(byte[] file ) {
         try {
             LinkedList<Commands> commandsLines = new ReadLines().Reader(file);

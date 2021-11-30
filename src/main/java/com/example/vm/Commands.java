@@ -1,5 +1,8 @@
 package com.example.vm;
 
+/**
+ * Class Commands, estrutura principal de comando contendo todas informações necessárias
+ */
 public class Commands{
     String line;
     String attribute_numberLine;
